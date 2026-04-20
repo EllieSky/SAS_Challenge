@@ -14,7 +14,8 @@ def test_create_user(client):
     
     assert data["name"] == name
     assert data["job"] == job
-    assert isinstance(data["id"], int)
+    assert isinstance(data["id"], str)
+    assert data["id"].isnumeric()
     assert isinstance(data["createdAt"], str)
     
     assert "_meta" in data

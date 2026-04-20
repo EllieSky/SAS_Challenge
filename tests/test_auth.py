@@ -10,7 +10,7 @@ def test_login_success(client):
     
     assert response.status_code == 200
     data = response.json()
-    assert "token" in data
+    assert "token" in data, "Expected token to be present in response"
     assert isinstance(data["token"], str)
     
     assert "_meta" in data
@@ -28,7 +28,7 @@ def test_login_success(client):
 def test_login_invalid(client, email, password, description, expected_error):
     response = client.login(email, password)
     
-    assert response.status_code == 400
+    assert response.status_code == 400, "Expected 400 Bad Request for invalid login"
     data = response.json()
     assert "error" in data
     assert expected_error.lower() in data["error"].lower()
