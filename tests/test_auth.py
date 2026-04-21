@@ -19,14 +19,17 @@ def test_login_success(client):
 
 @pytest.mark.parametrize(
     "email,password,description,expected_error", [
-        (os.getenv("TEST_EMAIL"), "", "empty password", "Missing password"),
-        ("", os.getenv("TEST_PASSWORD"), "empty email", "Missing email or username"),
+        (lambda test_email: test_email, "", "empty password", "Missing password"),
+        ("", "testPassword", "empty email", "Missing email or username"),
         ("", "", "empty email and password", "Missing email or username"),
         ("invalid-email", "password", "invalid email format", "user not found"),
     ]
 )
-def test_login_invalid(client, email, password, description, expected_error):
-    response = client.login(email, password)
+def test_login_invalid(client, email, password, description, expected_error, test_email):
+    # Resolve lambda function if needed
+    test_email = email(test_email) if callable(email) else email
+
+    response = client.login(test_email, password)
     
     assert response.status_code == 400, "Expected 400 Bad Request for invalid login"
     data = response.json()

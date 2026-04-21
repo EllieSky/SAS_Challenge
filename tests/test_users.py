@@ -20,6 +20,13 @@ def validate_data_length(data):
         assert len(data["data"]) == per_page, f"data length {len(data['data'])} should equal per_page {per_page} when total >= per_page"
 
 
+def validate_user_data(data):
+    for i, user in enumerate(data["data"]):
+        missing_keys = USER_KEYS - user.keys()
+        assert not missing_keys, \
+            f"User record at index {i} (id={user.get('id', 'unknown')}) is missing required keys: {missing_keys}"
+
+
 def test_get_users_list(client):
     response = client.get_users()
 
@@ -31,9 +38,7 @@ def test_get_users_list(client):
 
     validate_total_pages(data)
     validate_data_length(data)
-
-    for user in data["data"]:
-        assert USER_KEYS.issubset(user.keys()), "Expected user keys to be present in user data for each user"
+    validate_user_data(data)
 
     assert META_KEYS.issubset(data["_meta"].keys())
 
@@ -51,10 +56,7 @@ def test_get_users_by_page(client):
 
     validate_total_pages(data)
     validate_data_length(data)
-
-    for user in data["data"]:
-        assert USER_KEYS.issubset(user.keys()),\
-            "Expected user keys to be present in user data for each user"
+    validate_user_data(data)
 
     assert META_KEYS.issubset(data["_meta"].keys())
 
@@ -90,10 +92,7 @@ def test_get_users_with_custom_per_page(client):
     
     validate_total_pages(data)
     validate_data_length(data)
-    
-    for user in data["data"]:
-        assert USER_KEYS.issubset(user.keys()), \
-            "Expected user keys to be present in user data for each user"
+    validate_user_data(data)
     
     if "_meta" in data:
         assert META_KEYS.issubset(data["_meta"].keys())
@@ -131,9 +130,7 @@ def test_get_users_with_page_and_per_page(client):
     
     validate_total_pages(data)
     validate_data_length(data)
-    
-    for user in data["data"]:
-        assert USER_KEYS.issubset(user.keys()), "Expected user keys to be present in user data for each user"
+    validate_user_data(data)
     
     if "_meta" in data:
         assert META_KEYS.issubset(data["_meta"].keys())

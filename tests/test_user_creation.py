@@ -15,7 +15,7 @@ def test_create_user(client):
     assert data["name"] == name
     assert data["job"] == job
     assert isinstance(data["id"], str)
-    assert data["id"].isnumeric()
+    assert data["id"].isnumeric(), "id should be numeric"
     assert isinstance(data["createdAt"], str)
     
     assert "_meta" in data
@@ -33,7 +33,7 @@ def test_create_user_persistence(client):
     user_id = data["id"]
     
     get_response = client.get_user(user_id)
-    assert get_response.status_code == 200
+    assert get_response.status_code == 200, "Expected user to be found, and response code to be 200"
     get_data = get_response.json()
     assert get_data["data"]["id"] == user_id
     assert get_data["data"]["name"] == name
@@ -42,9 +42,9 @@ def test_create_user_persistence(client):
 
 @pytest.mark.xfail(reason="reqres.in API does not validate input, returns 201 for invalid data")
 @pytest.mark.parametrize("name,job,description,expected_error", [
-    ("", "Software Engineer", "empty name", "name"),
-    ("John Doe", "", "empty job", "job"),
-    ("", "", "empty name and job", "name"),
+    ("", "Software Engineer", "empty name", "missing name"),
+    ("John Doe", "", "empty job", "missing job"),
+    ("", "", "empty name and job", "missing name and job"),
 ])
 def test_create_user_invalid(client, name, job, description, expected_error):
     response = client.create_user(name, job)

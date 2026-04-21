@@ -17,6 +17,8 @@ def base_url():
 @pytest.fixture(scope="session")
 def client(base_url):
     api_key = os.getenv("API_KEY")
+    if not api_key:
+        pytest.fail("API_KEY not found in environment variables")
     return ReqResClient(base_url, api_key)
 
 

@@ -12,9 +12,11 @@ class ReqResClient:
         data = {"email": email, "password": password}
         return self.session.post(f"{self.base_url}/login", json=data)
 
-    def get_users(self, page: int = 1, per_page: int = None) -> requests.Response:
-        params = {"page": page}
-        if per_page:
+    def get_users(self, page: int | None = None, per_page: int | None = None) -> requests.Response:
+        params = {}
+        if page is not None:
+            params["page"] = page
+        if per_page is not None:
             params["per_page"] = per_page
         return self.session.get(f"{self.base_url}/users", params=params)
 
@@ -25,5 +27,5 @@ class ReqResClient:
         data = {"name": name, "job": job}
         return self.session.post(f"{self.base_url}/users", json=data)
 
-    def delete_user(self, user_id: Union[int, str]) -> requests.Response:
+    def delete_user(self, user_id: int | str) -> requests.Response:
         return self.session.delete(f"{self.base_url}/users/{user_id}")
