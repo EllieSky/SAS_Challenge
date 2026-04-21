@@ -4,12 +4,18 @@ A lightweight test framework for testing the ReqRes.in API endpoints using pytes
 
 ## Setup
 
-1. Install dependencies:
+1. Create and activate virtual environment:
+```bash
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+2. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-2. Set up environment variables:
+3. Set up environment variables:
 ```bash
 cp .env.example .env
 # Edit .env and add your credentials
@@ -19,9 +25,9 @@ Required environment variables:
 - `BASE_URL` - API base URL (default: https://reqres.in/api)
 - `TEST_EMAIL` - Test email for login
 - `TEST_PASSWORD` - Test password for login
-- `API_KEY` - API key
+- `API_KEY` - ReqRes.in API key (get free key at https://app.reqres.in/api-keys)
 
-3. Run tests:
+4. Run tests:
 ```bash
 pytest tests/ -v
 ```
